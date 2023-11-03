@@ -1,5 +1,7 @@
 # Group 09 - Handcrafted Haven Project
 
+[![Board Status](https://dev.azure.com/bpainterWDD430/e2fc051b-e969-49b7-a370-8a7fe1e030b9/3d08f403-b958-4701-9994-08e6eaf30eb5/_apis/work/boardbadge/b83f3c2c-5ee9-4a0b-b8b6-d595eea89183)](https://dev.azure.com/bpainterWDD430/e2fc051b-e969-49b7-a370-8a7fe1e030b9/_boards/board/t/3d08f403-b958-4701-9994-08e6eaf30eb5/Epics/)
+
 ## Team Members
 
 - Bermon Painter
@@ -65,7 +67,7 @@ Handcrafted Haven is a web application designed to serve as a virtual marketplac
 
 3. Set up environment variables in a `.env.local` file for database connections and API endpoints.:
    ```bash 
-   MONGODB_URI=mongodb+srv://group09:<provided in the group chat></provided>@cluster0.peig0sx.mongodb.net/?retryWrites=true&w=majority
+   MONGODB_URI=mongodb+srv://group09:<provided in the group chat>@cluster0.peig0sx.mongodb.net/?retryWrites=true&w=majority
 
 4. Run the development server:
    ```bash 
