@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Group 09 - Handcrafted Haven Project
 
-## Getting Started
+## Team Members
 
-First, run the development server:
+- Bermon Painter
+- Teresa Moser
+- Eli Cutchen
+- Moises Sanchez Molina
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Handcrafted Haven is a web application designed to serve as a virtual marketplace for artisans and crafters. It provides a platform for showcasing and selling unique handcrafted items, fostering a community of creators and customers who value handmade products. The application emphasizes sustainability, community engagement, and supports local artisans.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Goals
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Develop Software Development Skills**: Implement a full technology stack in a collaborative, cloud-based environment.
+- **Foster Effective Teamwork**: Enhance professionalism and teamwork skills, which are highly valued in the software development industry.
+- **Encourage Peer Learning**: Embrace the BYU-Idaho learning model principle of teaching and learning from one another.
 
-## Learn More
+### Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Seller Profiles**: Artisans can create profiles to showcase their work and story.
+- **Product Listings**: Artisans can list items for sale with detailed descriptions and images.
+- **Reviews and Ratings**: Users can leave feedback on products and sellers.
+- **Admin Management**: Admins can manage sellers, products, and reviews.
+- **Secure E-commerce**: Integrated payment gateways for secure transactions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Design
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Web Development Standards**: Focus on performance, validation, accessibility, SEO, and usability.
+- **Responsive Design**: Ensure compatibility with various devices and screen sizes.
+- **Branding**: Maintain a consistent visual identity throughout the application.
+- **Navigation**: Provide clear and intuitive navigation.
+- **Accessibility**: Adhere to WCAG 2.1, Level AA standards.
 
-## Deploy on Vercel
+### Required Technology
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Front-End**: HTML, CSS (Tailwind CSS), JavaScript, React/Next.js
+- **Back-End**: TypeScript, Node.js, Database (choice of Postgres, Mongo, or SQLite)
+- **Project Management**: Azure DevOps Boards
+- **Code Management**: Azure DevOps Repo
+- **Deployment**: Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Setup and Running the Application
+
+### Prerequisites
+
+- **Next.js**: The application must be a React-based web application using Next.js.
+- **Tailwind CSS**: All styling should be done using Tailwind CSS utility classes.
+- **MongoDB**: Data persistence is handled with a MongoDB database.
+- **Vercel**: Deployment and hosting of the web application.
+- **Authentication**: Implement user authentication and authorization.
+- **APIs**: Develop APIs for client-server communication.
+
+### Installation
+
+1. Clone the project repository:
+   ```bash
+   git clone https://dev.azure.com/bpainterWDD430/wdd430-bpainter/_git/wdd430-group09-project
+   cd wdd430-group09-project
+
+2. Install Dependencies:
+   ```bash 
+   npm install
+
+3. Set up environment variables in a `.env.local` file for database connections and API endpoints.:
+   ```bash 
+   MONGODB_URI=mongodb+srv://group09:<provided in the group chat></provided>@cluster0.peig0sx.mongodb.net/?retryWrites=true&w=majority
+
+4. Run the development server:
+   ```bash 
+   npm run dev
+
+5. Access the application at `http://localhost:3000`.
+
+6. Deployment
+Set up continuous deployment through Vercel through Azure Dev Ops coming soon...
