@@ -5,7 +5,6 @@
 ## Team Members
 
 - Bermon Painter
-- Teresa Moser
 - Eli Cutchen
 - Moises Sanchez Molina
 

@@ -1,18 +1,36 @@
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from "next-auth/react";
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession({ req: context.req });
+
+  if (!session || !session.user || session.user.role !== 'admin') {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
+
 export default function ProductDetail() {
   const router = useRouter();
-  const { id } = router.query;
 
   return (
     <>
       <Head>
-        <title>Product Details - Handcrafted Haven</title>
+        <title>Admin - Handcrafted Haven</title>
         <meta name="description" content="Learn more about our unique handcrafted items." />
       </Head>
-      <h1>Product Details: {id}</h1>
-      {/* Product details content goes here */}
+      <h1>Admin</h1>
+      {/* Admin info */}
     </>
   );
 }
