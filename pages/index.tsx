@@ -1,10 +1,13 @@
-// pages/index.tsx
-import RootLayout from '../app/layout';
+import Head from 'next/head';
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <RootLayout>
-      <h1>Welcome to my website!</h1>
-    </RootLayout>
-  )
+    <>
+      <Head>
+        <title>Handcrafted Haven - Home</title>
+        <meta name="description" content="Discover and purchase unique handcrafted items" />
+      </Head>
+      <h1>Welcome to Handcrafted Haven</h1>
+    </>
+  );
 }
