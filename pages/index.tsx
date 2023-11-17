@@ -7,7 +7,7 @@ export default function Home() {
         <title>Handcrafted Haven - Home</title>
         <meta name="description" content="Discover and purchase unique handcrafted items" />
       </Head>
-      <h1>Welcome to Handcrafted Haven</h1>
+      <h1 className="text-xl font-bold">Welcome to Handcrafted Haven</h1>
     </>
   );
 }
