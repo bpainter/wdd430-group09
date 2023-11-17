@@ -38,7 +38,6 @@ export default function Login() {
         <title>Login - Handcrafted Haven</title>
         <meta name="description" content="Log in to Handcrafted Haven." />
       </Head>
-      <h1>Login</h1>
       <h1 className="text-xl font-bold">Login</h1>
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-4">

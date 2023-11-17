@@ -4,16 +4,18 @@ import '../styles/globals.css';
 import Navigation from '../components/layout/Navigation';
 import Footer from '../components/layout/Footer';
 
-function HandcraftedHaven({ Component, pageProps }: AppProps) {
+function HandcraftedHavenPage({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <SessionProvider session={pageProps.session}>
         <Navigation />
-        <Component {...pageProps} />
+        <main className="flex-grow p-10 bg-gray-100 text-gray-700">
+          <Component {...pageProps} />
+        </main>
         <Footer />
       </SessionProvider>    
-    </>
+    </div>
   );
 }
 
-export default HandcraftedHaven;
+export default HandcraftedHavenPage;

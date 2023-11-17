@@ -29,7 +29,7 @@ export default function ProductDetail() {
         <title>Admin - Handcrafted Haven</title>
         <meta name="description" content="Learn more about our unique handcrafted items." />
       </Head>
-      <h1>Admin</h1>
+      <h1 className="text-xl font-bold">Admin</h1>
       {/* Admin info */}
     </>
   );
