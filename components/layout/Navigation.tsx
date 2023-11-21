@@ -13,6 +13,11 @@ export default function Navigation() {
     { name: 'Artisans', href: '/artisans', current: false },
   ];
 
+  /**
+   * Represents the navigation items for the user.
+   * If the user is logged in, it includes the profile and logout options.
+   * If the user is not logged in, it includes the login and create account options.
+   */
   const userNavigation = session ? [
     { name: 'Profile', href: '/profile', current: false },
     { name: 'Logout', href: '#', onClick: () => signOut(), current: false },

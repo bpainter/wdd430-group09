@@ -1,13 +1,15 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
-import connectToDatabase from "../../../lib/mongodb";
-import clientPromise from "../../../lib/mongodb";
+import mongoClientPromise from "../../../lib/mongodb";
 import { verifyPassword } from "../../../lib/auth"
 
+/**
+ * NextAuth configuration for authentication API endpoint.
+ */
 export default NextAuth({
   session: {
-    maxAge: 30 * 24 * 60 * 60, 
-    updateAge: 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // Maximum age of the session (in seconds)
+    updateAge: 24 * 60 * 60, // Age at which session will be updated (in seconds)
   },
 
   providers: [
@@ -16,16 +18,22 @@ export default NextAuth({
       name: "Credentials",
       credentials: {
         // Define the credentials you expect to receive
-        email: { label: "Email", type: "text", placeholder: "john.doe@example.com" },
-        password:  {  label: "Password", type: "password" }
+        email: { label: "Email", type: "text", placeholder: "john.doe@example.com" }, // Email credential
+        password:  {  label: "Password", type: "password" } // Password credential
       },
 
+      /**
+       * Authorize function for validating user credentials.
+       * @param credentials - User credentials provided during authentication.
+       * @returns Promise that resolves to an object containing user information if authentication is successful.
+       * @throws Error if credentials are not provided, user is not found, or password is incorrect.
+       */
       authorize: async (credentials) => {
         if (!credentials) {
           throw new Error('Credentials not provided');
         }
 
-        const client = await clientPromise;
+        const client = await mongoClientPromise;
         const db = client.db();
         const usersCollection = db.collection('users');
         const user = await usersCollection.findOne({ email: credentials.email });

@@ -4,11 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../../components/layout/Header';
 import { GetServerSideProps } from 'next';
-import clientPromise from '../../lib/mongodb';
+import mongoClientPromise from '../../lib/mongodb';
 import { Product } from '../../types/product';
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const client = await clientPromise;
+  const client = await mongoClientPromise;
   const db = client.db();
 
   const products = await db.collection('products').find({}).toArray();
@@ -23,6 +23,14 @@ export const getServerSideProps: GetServerSideProps = async () => {
 interface ProfilesProps {
   products: Product[];
 }
+
+/**
+ * Renders a page displaying all products.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Array} props.products - The array of products to be displayed.
+ * @returns {JSX.Element} The JSX element representing the products page.
+ */
 
 export default function Products({ products }: ProfilesProps) {
   return (

@@ -6,6 +6,11 @@ import Link from 'next/link';
 export default function Login() {
   const router = useRouter();
 
+  /**
+   * Handles the form submission for the login page.
+   * 
+   * @param event - The form submission event.
+   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {

@@ -4,6 +4,12 @@ import { useState } from 'react';
 import Alert from '../components/elements/Alert';
 import Header from '../components/layout/Header';
 
+/**
+ * Signup component for creating a new user account.
+ * 
+ * @returns The Signup component.
+ */
+
 export default function Signup() {
   const router = useRouter();
   const [processing, setProcessing] = useState(false);

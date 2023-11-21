@@ -4,6 +4,12 @@ import Head from 'next/head';
 import Header from '../components/layout/Header';
 import { useRouter } from 'next/router';
 
+/**
+ * Retrieves the server-side props for the admin page.
+ * 
+ * @param context - The server-side props context.
+ * @returns An object containing the server-side props.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession({ req: context.req });
 

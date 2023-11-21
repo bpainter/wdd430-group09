@@ -31,7 +31,7 @@ const generateDummyData = async (numUsers: number, numProducts: number, numRevie
       if (i === 0) {
         // Create an admin user
         username = ADMIN_USERNAME;
-        email = ADMIN_USERNAME;
+        email = ADMIN_EMAIL;
         password = await bcrypt.hash(ADMIN_SECRET, 12);
         roles = ['admin'];
       } else {
