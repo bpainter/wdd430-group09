@@ -6,15 +6,15 @@ import Footer from '../components/layout/Footer';
 
 function HandcraftedHavenPage({ Component, pageProps }: AppProps) {
   return (
-    <div className="flex flex-col min-h-screen">
-      <SessionProvider session={pageProps.session}>
+    <SessionProvider session={pageProps.session}>
+      <div className="flex flex-col min-h-screen">
         <Navigation />
-        <main className="flex-grow p-10 bg-gray-100 text-gray-700">
+        <main className="flex-grow bg-gray-100">
           <Component {...pageProps} />
         </main>
         <Footer />
-      </SessionProvider>    
-    </div>
+      </div>    
+    </SessionProvider>
   );
 }
 

@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Header from '../../components/layout/Header';
 
 export default function Products() {
   return (
@@ -7,8 +8,9 @@ export default function Products() {
         <title>All Products - Handcrafted Haven</title>
         <meta name="description" content="Discover a wide range of handcrafted items." />
       </Head>
-      <h1 className="text-xl font-bold">Explore Our Products</h1>
-      {/* Products listing content goes here */}
+      <Header title="Explore our Handcrafted Products" />
+      
+      {/* Content */}
     </>
   );
 }
