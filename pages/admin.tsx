@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from "next-auth/react";
 import Head from 'next/head';
+import Header from '../components/layout/Header';
 import { useRouter } from 'next/router';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -29,8 +30,9 @@ export default function ProductDetail() {
         <title>Admin - Handcrafted Haven</title>
         <meta name="description" content="Learn more about our unique handcrafted items." />
       </Head>
-      <h1 className="text-xl font-bold">Admin</h1>
-      {/* Admin info */}
+      <Header title="Admin Dashboard" />
+      
+      {/* Content */}
     </>
   );
 }

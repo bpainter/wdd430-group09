@@ -10,6 +10,8 @@
     "generate-dummy-data": "ts-node scripts/generateDummyData.ts"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",

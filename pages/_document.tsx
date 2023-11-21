@@ -4,9 +4,9 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 class HandcraftedHavenDocument extends Document {
   render() {
     return (
-      <Html>
+      <Html className="h-full">
         <Head />
-        <body>
+        <body className="h-full bg-gray-100">
           <Main />
           <NextScript />
         </body>

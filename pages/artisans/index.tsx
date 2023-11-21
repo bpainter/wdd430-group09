@@ -1,3 +1,4 @@
+import Header from '@/components/layout/Header';
 import Head from 'next/head';
 
 export default function Artisans() {
@@ -7,7 +8,7 @@ export default function Artisans() {
         <title>All Artisans - Handcrafted Haven</title>
         <meta name="description" content="Get to know our artisans." />
       </Head>
-      <h1 className="text-xl font-bold">Get to know our Artisans</h1>
+      <Header title="Meet our Artisans" />
       {/* Artisan listing content goes here */}
     </>
   );

@@ -1,4 +1,6 @@
+// pages/index.tsx
 import Head from 'next/head';
+import Header from '../components/layout/Header';
 
 export default function Home() {
   return (
@@ -7,7 +9,9 @@ export default function Home() {
         <title>Handcrafted Haven - Home</title>
         <meta name="description" content="Discover and purchase unique handcrafted items" />
       </Head>
-      <h1 className="text-xl font-bold">Welcome to Handcrafted Haven</h1>
+      <Header title="Welcome to Handcrafted Haven" />
+      
+      {/* Content */}
     </>
   );
 }

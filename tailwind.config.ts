@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 const config: Config = {
   content: [
@@ -43,8 +44,9 @@ const config: Config = {
         xxl: '1536px',
       },
       fontFamily: {
-        heading: ['Georgia', 'serif'],
-        body: ['Arial', 'sans-serif'],
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        heading: ['Inter var', 'sans-serif'],
+        body: ['Inter var', 'sans-serif'],
       },
       spacing: {
         xs: '0.25rem', // 1 * 0.25 = 0.25rem (4px)
