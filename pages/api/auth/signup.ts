@@ -21,7 +21,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     client.close();
     return res.status(422).json({ message: 'User already exists' });
   }
-
+  const existingUsername = await db.collection('users').findOne({ username });
+  if (existingUsername) {
+    client.close();
+    return res.status(422).json({ message: 'Username already exists' });
+  }
+  
   const hashedPassword = await bcrypt.hash(password, 12);
 
   const result = await db.collection('users').insertOne({

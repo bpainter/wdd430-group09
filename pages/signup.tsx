@@ -41,6 +41,11 @@ export default function Signup() {
 
     setProcessing(false);
 
+    if (!response.ok) {
+      setError(data.message || 'An error occurred. Please try again.');
+      return;
+    }
+    
     if (response.ok) {
       // Handle success - Redirect or show success message
       if (isArtisan) {
