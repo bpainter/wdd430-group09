@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Header from '../components/layout/Header';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -11,7 +10,7 @@ export default function Login() {
    * 
    * @param event - The form submission event.
    */
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       email: { value: string };
@@ -31,8 +30,15 @@ export default function Login() {
     const data = await response.json();
 
     if (response.ok) {
-      // Handle success - Redirect or show success message
-      router.push('/profile'); // Redirect to profile or other page
+      // Store the token in localStorage
+      localStorage.setItem('token', data.token);
+
+      // Redirect to artisan profile or other page
+      if (data.role === 'artisan') {
+        router.push(`/artisans/${data._id}`); // Redirect to artisan's profile
+      } else {
+        router.push('/'); // Redirect to home or other page for non-artisan users
+      }
     } else {
       // Handle errors - Show error message
       alert(data.message || 'Something went wrong');
@@ -45,7 +51,6 @@ export default function Login() {
         <title>Login - Handcrafted Haven</title>
         <meta name="description" content="Log in to Handcrafted Haven." />
       </Head>
-      {/* <Header title="Log In to Handcrafted Haven" /> */}
       
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h1 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -54,7 +59,7 @@ export default function Login() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleLoginSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-900">
               Email address

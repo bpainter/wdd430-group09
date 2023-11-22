@@ -15,7 +15,7 @@ export default function Signup() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignupSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       username: { value: string };
@@ -83,7 +83,7 @@ export default function Signup() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
         {error && <Alert message={error} type="danger" />}
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+        <form onSubmit={handleSignupSubmit} className="space-y-6 mt-4">
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-900">
               Username
