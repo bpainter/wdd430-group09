@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form'
+import { signIn } from 'next-auth/react'
 import Alert from '../components/elements/Alert';
 import Header from '../components/layout/Header';
 
@@ -11,6 +13,7 @@ import Header from '../components/layout/Header';
  */
 
 export default function Signup() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const router = useRouter();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -35,7 +38,7 @@ export default function Signup() {
 
     setProcessing(true);
 
-    const response = await fetch('/api/auth/signup', {
+    const response = await fetch('/api/auth/callback/credentials', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,13 +92,14 @@ export default function Signup() {
               Username
             </label>
             <div className="mt-2">
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4"
-              />
+            <input {...register('username', { required: true })} 
+              placeholder="Username" 
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4" 
+              required 
+              name="username" 
+              id="username" 
+              type="text"/>
+            {errors.username && <p>Username is required</p>}
             </div>
           </div>
 
@@ -104,14 +108,15 @@ export default function Signup() {
               Email address
             </label>
             <div className="mt-2">
-              <input
+              <input {...register('email', { required: true })} 
+                placeholder="Email" 
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4"
-              />
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4"/>
+              {errors.email && <p>Email is required</p>}
             </div>
           </div>
 
@@ -120,7 +125,8 @@ export default function Signup() {
               Password
             </label>
             <div className="mt-2">
-              <input
+            <input {...register('password', { required: true })} 
+                placeholder="Password" 
                 id="password"
                 name="password"
                 type="password"

@@ -1,9 +1,12 @@
 import Head from 'next/head';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 export default function Login() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   /**
    * Handles the form submission for the login page.
@@ -12,6 +15,9 @@ export default function Login() {
    */
   const handleLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
+    setError('');
+
     const target = event.target as typeof event.target & {
       email: { value: string };
       password: { value: string };
@@ -30,6 +36,9 @@ export default function Login() {
     const data = await response.json();
 
     if (response.ok) {
+      setError(data.message || 'Login failed');
+      setLoading(false);
+
       // Store the token in localStorage
       localStorage.setItem('token', data.token);
 
@@ -60,6 +69,7 @@ export default function Login() {
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
         <form onSubmit={handleLoginSubmit} className="space-y-6">
+          {error && <div className="error">{error}</div>}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-900">
               Email address
@@ -104,8 +114,9 @@ export default function Login() {
             <button
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-600"
+              disabled={loading}
             >
-              Log in
+              {loading ? 'Logging in...' : 'Log in'}
             </button>
           </div>
         </form>
