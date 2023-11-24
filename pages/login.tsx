@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
   const router = useRouter();
@@ -25,33 +26,42 @@ export default function Login() {
     const email = target.email.value;
     const password = target.password.value;
 
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    // const response = await fetch('/api/auth/login', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ email, password }),
+    // });
+    // Use the signIn function from NextAuth to create a session
+    const result = await signIn('credentials', { email, password, callbackUrl: '/' });
 
-    const data = await response.json();
-
-    if (response.ok) {
-      setError(data.message || 'Login failed');
+    if (result.error) {
+      // Handle errors - Show error message
+      setError(result.error);
       setLoading(false);
+    }
+    // const data = await response.json();
 
+    // if (response.ok) {
+      // Use the signIn function from NextAuth to create a session
+      // signIn('credentials');
+      // setLoading(false);
+      // setError(data.message || 'Login failed');
+      
       // Store the token in localStorage
-      localStorage.setItem('token', data.token);
+      // localStorage.setItem('token', data.token);
 
       // Redirect to artisan profile or other page
-      if (data.role === 'artisan') {
-        router.push(`/artisans/${data._id}`); // Redirect to artisan's profile
-      } else {
-        router.push('/'); // Redirect to home or other page for non-artisan users
-      }
-    } else {
-      // Handle errors - Show error message
-      alert(data.message || 'Something went wrong');
-    }
+      // if (data.role === 'artisan') {
+      //   router.push(`/artisans/${data._id}`); // Redirect to artisan's profile
+      // } else {
+      //   router.push('/'); // Redirect to home or other page for non-artisan users
+      // }
+    // } else {
+    //   // Handle errors - Show error message
+    //   alert(data.message || 'Something went wrong');
+    // }
   };
 
   return (

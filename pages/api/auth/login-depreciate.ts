@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import mongoClientPromise from '../../../lib/mongodb';
 import { verifyPassword } from '../../../lib/auth';
-import jwt from 'jsonwebtoken';
+import { signIn } from 'next-auth/client';
 
 /**
  * Handles the login API request.
@@ -34,17 +34,20 @@ async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(401).json({ message: 'Invalid login credentials' });
     }
 
+    // Sign in the user with NextAuth
+    await signIn('credentials', { email: user.email });
+
     // Ensure that JWT_SECRET environment variable is set and accessible
-    if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ message: 'Internal server error' });
-    }
+    // if (!process.env.JWT_SECRET) {
+    //   return res.status(500).json({ message: 'Internal server error' });
+    // }
 
     // Generate a JWT token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '36h' }    // Token expires in 36 hours
-    );
+    // const token = jwt.sign(
+    //   { userId: user._id, email: user.email },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: '36h' }    // Token expires in 36 hours
+    // );
 
     // Send the token to the client
     res.status(200).json({ message: 'Logged in successfully', token });

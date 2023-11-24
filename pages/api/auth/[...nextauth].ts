@@ -20,6 +20,7 @@ export default NextAuth({
       async authorize(credentials: any) {
         const client = await clientPromise;
         const usersCollection = client.db().collection('users');
+        const email = credentials?.email.toLowerCase();
         const user = await usersCollection.findOne({ email: credentials.email });
 
         if (!user) {
@@ -27,11 +28,12 @@ export default NextAuth({
           throw new Error('No user found')
         }
 
-        const isValid = await verifyPassword(credentials.password, user.password)
+        // Use the verifyPassword function to validate the password
+        const passwordIsValid = await verifyPassword(credentials?.password!, user.password);
 
-        if (!isValid) {
-          client.close()
-          throw new Error('Incorrect password')
+        if (!passwordIsValid) {
+          client.close();
+          throw new Error('Incorrect password');
         }
 
         client.close()
@@ -46,21 +48,42 @@ export default NextAuth({
     }),
   ],
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT, user: any }) {
       if (user) {
-        token.id = user.id
-        token.email = user.email
-        token.username = user.username
-        token.role = user.role
+        token.id = user.id;
+        token.email = user.email;
+        token.username = user.username;
+        token.role = user.role;
       }
       return token
     },
     async session({ session, token }: { session: Session, token: JWT }) {
-      session.user = token
-      return session
+      session.user = token;
+      return session;
+    },
+  }, 
+  events: {
+    async signIn(event) {
+      if (event.user) {
+        switch (event.user.role) {
+          case 'admin':
+            window.location.href = '/admin';
+            break;
+          case 'artisan':
+            window.location.href = '/artisan';
+            break;
+          case 'user':
+            window.location.href = '/user';
+            break;
+          default:
+            window.location.href = '/';
+            break;
+        }
+      }
     },
   },
-})
+});

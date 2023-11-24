@@ -56,12 +56,14 @@ export default function Signup() {
     }
     
     if (response.ok) {
+      // Handle success - Create a session and redirect the user
+      signIn('credentials', { callbackUrl: isArtisan ? `/artisans/${data.id}` : '/' });
       // Handle success - Redirect or show success message
-      if (isArtisan) {
-          router.push(`/artisans/${data.id}`); // Redirect to artisan profile page
-        } else {
-        router.push('/'); // Redirect to homepage
-      }
+      // if (isArtisan) {
+      //     router.push(`/artisans/${data.id}`); // Redirect to artisan profile page
+      //   } else {
+      //   router.push('/'); // Redirect to homepage
+      // }
     } else {
       // Handle errors - Show error message
       setError(data.message || 'Something went wrong');
