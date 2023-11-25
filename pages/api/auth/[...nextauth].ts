@@ -1,8 +1,8 @@
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from "next-auth/providers/credentials";
+import connectToDatabase from '../../../lib/mongodb';
 import { verifyPassword } from '../../../lib/auth';
-import clientPromise from '../../../lib/mongodb';
 
 /**
  * NextAuth configuration for authentication API.
@@ -18,25 +18,20 @@ export default NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials: any) {
-        const client = await clientPromise;
-        const usersCollection = client.db().collection('users');
-        const email = credentials?.email.toLowerCase();
+        const client = await connectToDatabase();
+        const usersCollection = client.collection('users');
         const user = await usersCollection.findOne({ email: credentials.email });
 
         if (!user) {
-          client.close()
-          throw new Error('No user found')
+          throw new Error('No user found');
         }
 
         // Use the verifyPassword function to validate the password
         const passwordIsValid = await verifyPassword(credentials?.password!, user.password);
 
         if (!passwordIsValid) {
-          client.close();
           throw new Error('Incorrect password');
         }
-
-        client.close()
 
         return {
           id: user._id.toString(),
@@ -59,31 +54,20 @@ export default NextAuth({
         token.username = user.username;
         token.role = user.role;
       }
-      return token
+      return token;
     },
     async session({ session, token }: { session: Session, token: JWT }) {
       session.user = token;
       return session;
     },
-  }, 
-  events: {
-    async signIn(event) {
-      if (event.user) {
-        switch (event.user.role) {
-          case 'admin':
-            window.location.href = '/admin';
-            break;
-          case 'artisan':
-            window.location.href = '/artisan';
-            break;
-          case 'user':
-            window.location.href = '/user';
-            break;
-          default:
-            window.location.href = '/';
-            break;
-        }
+    async signIn({ user }) {
+      if (user.role === 'admin') {
+        return '/admin';  // Redirect admins to the admin dashboard
+      } else if (user.role === 'artisan') {
+        return `/artisan/${user.id}`;  // Redirect artisans to their profile
+      } else {
+        return `/user/${user.id}`;  // Redirect standard users to their profile
       }
     },
-  },
+  }
 });

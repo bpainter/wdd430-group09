@@ -12,6 +12,13 @@ declare module "next-auth" {
       // Add any other custom properties you need, like 'name', 'email', 'image'.
     } & DefaultSession["user"];
   }
+
+  /**
+   * Extend the built-in User type from NextAuth to include custom fields
+   */
+  interface User {
+    role: string; // Add a 'role' field to the User type
+  }
 }
 
 declare module "next-auth/jwt" {
