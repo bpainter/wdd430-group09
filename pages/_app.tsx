@@ -18,7 +18,7 @@ function HandcraftedHavenPage({ Component, pageProps }: AppProps) {
     <SessionProvider session={pageProps.session}>
       <div className="flex flex-col min-h-screen">
         <Navigation />
-        <main className="flex-grow bg-gray-100">
+        <main className="flex-grow bg-gray-100 text-gray-700">
           <Component {...pageProps} />
         </main>
         <Footer />

@@ -4,19 +4,12 @@ import connectToDatabase from '../lib/mongodb';
 import { ObjectId } from 'mongodb';
 import Header from '@/components/layout/Header';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 // Add a type for the props
 type ProfileProps = {
   user: any; // Define a more specific type based on your user model
 };
 
-/**
- * Retrieves the server-side props for the admin page.
- * 
- * @param context - The server-side props context.
- * @returns An object containing the server-side props.
- */
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const session = await getSession(context);
 
@@ -38,19 +31,17 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
       user: JSON.parse(JSON.stringify(user)),
     },
   };
-}
+};
 
-export default function Admin({ user }: ProfileProps) {
-  const router = useRouter();
 
+export default function Profile({ user }: ProfileProps) {
   return (
     <>
       <Head>
-        <title>Admin - Handcrafted Haven</title>
-        <meta name="description" content="Learn more about our unique handcrafted items." />
+        <title>Profile</title>
+        <meta name="description" content={`${user?.username}'s Profile.`} />
       </Head>
-      <Header title="Admin Dashboard" />
-      
+      <Header title={`${user?.username}'s Profile`} />
       <div>
         <p>Name: {user?.profile.name}</p>
         <p>Bio: {user?.profile.bio}</p>
@@ -59,3 +50,4 @@ export default function Admin({ user }: ProfileProps) {
     </>
   );
 }
+

@@ -17,7 +17,10 @@ export default NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials: any) {
+      async authorize(credentials: Record<"email" | "password", string> | undefined) {
+        if (!credentials) {
+          throw new Error("Credentials not provided");
+        }
         const client = await connectToDatabase();
         const usersCollection = client.collection('users');
         const user = await usersCollection.findOne({ email: credentials.email });
@@ -37,7 +40,7 @@ export default NextAuth({
           id: user._id.toString(),
           email: user.email,
           username: user.username,
-          role: user.role,
+          roles: user.roles,
         }
       },
     }),
@@ -61,12 +64,12 @@ export default NextAuth({
       return session;
     },
     async signIn({ user }) {
-      if (user.role === 'admin') {
+      if (user.roles.includes('admin')) {
         return '/admin';  // Redirect admins to the admin dashboard
-      } else if (user.role === 'artisan') {
+      } else if (user.roles.includes('artisan')) {
         return `/artisan/${user.id}`;  // Redirect artisans to their profile
       } else {
-        return `/user/${user.id}`;  // Redirect standard users to their profile
+        return `/profile`;  // Redirect standard users to their profile
       }
     },
   }
