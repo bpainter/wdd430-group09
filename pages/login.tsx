@@ -2,12 +2,30 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
+import { useEffect } from 'react';
+import { signIn, getSession, useSession } from 'next-auth/react';
 
 export default function Login() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  /* Redirect to their appropariate if the user is already signed in and they try
+     to access the login page */
+  useEffect(() => {
+    console.log("Is logged in?", session); // Log the session object to the console
+
+    if (session && session.user && session.user.roles) {
+      if (session.user.roles.includes('admin')) {
+        router.push('/admin');
+      } else if (session.user.roles.includes('artisan')) {
+        router.push(`/artisan/${session.user.id}`);
+      } else {
+        router.push('/profile');
+      }
+    }
+  }, [session, router]);
 
   /**
    * Handles the form submission for the login page.
@@ -26,17 +44,55 @@ export default function Login() {
     const email = target.email.value;
     const password = target.password.value;
 
+    console.log('Submitting login form...'); // Log the start of the form submission
+    console.log("event.targets", email + ' ' + password);
+
     // Use the signIn function from NextAuth to create a session
-    const result = await signIn('credentials', {
+    await signIn('credentials', {
       email,
       password,
+      redirect: false, // Prevent NextAuth from automatically redirecting
     });
 
-    if (result && !result.ok) {
+    // Check if a session exists
+    const session = await getSession();
+    if (session) {
+      // Redirect to the profile page after successful login
+      if (session.user.roles.includes('admin')) {
+        console.log('Redirect to admin', session.user.roles);
+        router.push('/admin');
+      } else if (session.user.roles.includes('artisan')) {
+        console.log('Redirect to artisan', session.user.roles);
+        router.push(`/artisan/${session.user.id}`);
+      } else {
+        console.log('Redirect to user', session.user.roles);
+        router.push('/profile');
+      }
+      console.log('Login successful', session); // Log the successful login
+    } else {
       // Handle errors - Show error message
-      setError(result.error || 'Login failed');
+      setError('Login failed');
       setLoading(false);
+      console.log('Login failed'); // Log the failed login
     }
+
+    // OLD CODE - NOT WORKING
+    // Use the signIn function from NextAuth to create a session
+    // const result = await signIn('credentials', {
+    //   email,
+    //   password,
+    // });
+
+    // console.log('Login result:', result); // Log the result of the login attempt
+
+    // if (result && !result.ok) {
+    //   // Handle errors - Show error message
+    //   setError(result.error || 'Login failed');
+    //   setLoading(false);
+    // } else {
+    //   console.log('Login successful'); // Log the successful login
+    //   router.push('/profile'); // Redirect to the profile page after successful login
+    // }
   };
 
   return (

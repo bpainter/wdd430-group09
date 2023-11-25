@@ -7,7 +7,7 @@ import Head from 'next/head';
 
 // Add a type for the props
 type ProfileProps = {
-  user: any; // Define a more specific type based on your user model
+  user: any;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {

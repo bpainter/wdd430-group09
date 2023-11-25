@@ -26,8 +26,8 @@ export default function Navigation() {
     { name: 'Create Account', href: '/signup', current: false },
   ];
   
-  if (session && session.user.role === 'admin') {
-    userNavigation.push({ name: 'Admin', href: '/admin', current: false });
+  if (session && session.user.roles && session.user.roles.includes('admin')) {
+    userNavigation.unshift({ name: 'Admin', href: '/admin', current: false });
   }
 
   function classNames(...classes: any) {
@@ -86,6 +86,7 @@ export default function Navigation() {
                             item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )}
+                          onClick={item.onClick}
                         >
                           {item.name}
                         </Link>

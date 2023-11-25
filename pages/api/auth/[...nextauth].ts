@@ -36,6 +36,8 @@ export default NextAuth({
           throw new Error('Incorrect password');
         }
 
+        console.log('User authorized:', user);
+
         return {
           id: user._id.toString(),
           email: user.email,
@@ -55,7 +57,7 @@ export default NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.username = user.username;
-        token.role = user.role;
+        token.roles = user.roles;
       }
       return token;
     },
@@ -64,13 +66,18 @@ export default NextAuth({
       return session;
     },
     async signIn({ user }) {
-      if (user.roles.includes('admin')) {
-        return '/admin';  // Redirect admins to the admin dashboard
-      } else if (user.roles.includes('artisan')) {
-        return `/artisan/${user.id}`;  // Redirect artisans to their profile
-      } else {
-        return `/profile`;  // Redirect standard users to their profile
-      }
+      console.log('User signed in:', user);
+      return true;
+      // if (user.roles.includes('admin')) {
+      //   console.log('Redirecting to admin dashboard');
+      //   return '/admin';  // Redirect admins to the admin dashboard
+      // } else if (user.roles.includes('artisan')) {
+      //   console.log('Redirecting to artisan profile');
+      //   return `/artisan/${user.id}`;  // Redirect artisans to their profile
+      // } else {
+      //   console.log('Redirecting to user profile');
+      //   return `/profile`;  // Redirect standard users to their profile
+      // }
     },
   }
 });
