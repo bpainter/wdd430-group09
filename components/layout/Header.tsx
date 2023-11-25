@@ -1,7 +1,12 @@
-type HeaderProps = {
-  title: string;
-};
+import { HeaderProps } from '../../types/header';
 
+/**
+ * Renders the header component with the specified title.
+ * 
+ * @param {Object} props - The component props.
+ * @param {string} props.title - The title to be displayed in the header.
+ * @returns {JSX.Element} The rendered header component.
+ */
 export default function Header({ title }: HeaderProps) {
   return (
     <header className="bg-white shadow">

@@ -1,15 +1,24 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form'
+import { signIn } from 'next-auth/react'
 import Alert from '../components/elements/Alert';
 import Header from '../components/layout/Header';
 
+/**
+ * Signup component for creating a new user account.
+ * 
+ * @returns The Signup component.
+ */
+
 export default function Signup() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const router = useRouter();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignupSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       username: { value: string };
@@ -29,7 +38,7 @@ export default function Signup() {
 
     setProcessing(true);
 
-    const response = await fetch('/api/auth/signup', {
+    const response = await fetch('/api/auth/callback/credentials', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,12 +56,14 @@ export default function Signup() {
     }
     
     if (response.ok) {
+      // Handle success - Create a session and redirect the user
+      signIn('credentials', { callbackUrl: isArtisan ? `/artisans/${data.id}` : '/' });
       // Handle success - Redirect or show success message
-      if (isArtisan) {
-          router.push(`/artisans/${data.id}`); // Redirect to artisan profile page
-        } else {
-        router.push('/'); // Redirect to homepage
-      }
+      // if (isArtisan) {
+      //     router.push(`/artisans/${data.id}`); // Redirect to artisan profile page
+      //   } else {
+      //   router.push('/'); // Redirect to homepage
+      // }
     } else {
       // Handle errors - Show error message
       setError(data.message || 'Something went wrong');
@@ -77,19 +88,20 @@ export default function Signup() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
         {error && <Alert message={error} type="danger" />}
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+        <form onSubmit={handleSignupSubmit} className="space-y-6 mt-4">
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-900">
               Username
             </label>
             <div className="mt-2">
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4"
-              />
+            <input {...register('username', { required: true })} 
+              placeholder="Username" 
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4" 
+              required 
+              name="username" 
+              id="username" 
+              type="text"/>
+            {errors.username && <p>Username is required</p>}
             </div>
           </div>
 
@@ -98,14 +110,15 @@ export default function Signup() {
               Email address
             </label>
             <div className="mt-2">
-              <input
+              <input {...register('email', { required: true })} 
+                placeholder="Email" 
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4"
-              />
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm p-4"/>
+              {errors.email && <p>Email is required</p>}
             </div>
           </div>
 
@@ -114,7 +127,8 @@ export default function Signup() {
               Password
             </label>
             <div className="mt-2">
-              <input
+            <input {...register('password', { required: true })} 
+                placeholder="Password" 
                 id="password"
                 name="password"
                 type="password"

@@ -4,13 +4,20 @@ import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   /**
-   * Extend the built-in session types with custom properties, like `role`.
+   * Extend the built-in session types with custom properties, like `roles`.
    */
   interface Session {
     user: {
-      role?: string;
-      // Add any other custom properties you need, like 'name', 'email', 'image'.
+      roles?: string[];
+      // Add any other custom properties you need.
     } & DefaultSession["user"];
+  }
+
+  /**
+   * Extend the built-in User type from NextAuth to include custom fields.
+   */
+  interface User {
+    roles: string[]; // Use 'roles' as an array of strings
   }
 }
 
@@ -19,6 +26,6 @@ declare module "next-auth/jwt" {
    * Extend the built-in JWT types with custom properties, if needed.
    */
   interface JWT {
-    role?: string;
+    roles?: string[];
   }
 }

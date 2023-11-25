@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession, signIn,signOut } from 'next-auth/react';
 
 export default function Navigation() {
   const { data: session } = useSession();
@@ -13,6 +13,11 @@ export default function Navigation() {
     { name: 'Artisans', href: '/artisans', current: false },
   ];
 
+  /**
+   * Represents the navigation items for the user.
+   * If the user is logged in, it includes the profile and logout options.
+   * If the user is not logged in, it includes the login and create account options.
+   */
   const userNavigation = session ? [
     { name: 'Profile', href: '/profile', current: false },
     { name: 'Logout', href: '#', onClick: () => signOut(), current: false },
@@ -21,8 +26,8 @@ export default function Navigation() {
     { name: 'Create Account', href: '/signup', current: false },
   ];
   
-  if (session && session.user.role === 'admin') {
-    userNavigation.push({ name: 'Admin', href: '/admin', current: false });
+  if (session && session.user.roles && session.user.roles.includes('admin')) {
+    userNavigation.unshift({ name: 'Admin', href: '/admin', current: false });
   }
 
   function classNames(...classes: any) {
@@ -81,6 +86,7 @@ export default function Navigation() {
                             item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )}
+                          onClick={item.onClick}
                         >
                           {item.name}
                         </Link>

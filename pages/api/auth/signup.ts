@@ -1,7 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { createUser } from 'next-auth/adapters';
 import bcrypt from 'bcryptjs';
 import { MongoClient } from 'mongodb';
 
+/**
+ * Handles the signup API request.
+ * 
+ * @param req - The NextApiRequest object representing the incoming request.
+ * @param res - The NextApiResponse object representing the outgoing response.
+ * @returns A Promise that resolves to void.
+ */
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -35,6 +43,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     password: hashedPassword,
     roles: ['user'], // default role
   });
+
+  // Create a user in the NextAuth session database
+  await createUser({ email, username, password: hashedPassword });
 
   client.close();
   res.status(201).json({ message: 'User created', userId: result.insertedId });
