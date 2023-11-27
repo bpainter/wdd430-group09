@@ -113,21 +113,21 @@ export default function ProductDetail({ product, reviews, users, averageRating, 
                     <StarIcon
                       key={rating}
                       className={classNames(
-                        averageRating > rating ? 'text-gray-900' : 'text-gray-200',
+                        averageRating > rating ? 'text-yellow-500' : 'text-gray-200',
                         'h-5 w-5 flex-shrink-0'
                       )}
                     />
                   ))}
                 </div>
                 <p className="sr-only">{averageRating} out of 5 stars</p>
-                <a href="#" className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="#all-reviews" className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
                   See all {reviewCount} reviews
                 </a>
               </div>
             </div>
 
             {/* Call to Action */}
-            <button className="w-full py-2 mt-4 bg-blue-600 text-white">Add to cart</button>
+            <button className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Add to cart</button>
 
             {/* Product info */}
             <p className="mt-4">{product.description}</p>

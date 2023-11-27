@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['tailwindui.com', 'loremflickr.com', 'avatars.githubusercontent.com'],
+    domains: ['tailwindui.com', 'loremflickr.com', 'avatars.githubusercontent.com', 'cloudflare-ipfs.com'],
     remotePatterns: [
       { 
         protocol: 'https', 
@@ -17,9 +17,9 @@ const nextConfig = {
       },
       { 
         protocol: 'https', 
-        hostname: 'tailwindui.com',
+        hostname: 'loremflickr.com',
         port: '',
-        pathname: '/img/logos/**',
+        pathname: '**',
       },
     ],
   },

@@ -15,7 +15,7 @@ export default function Reviews({ reviews }: ReviewsProps) {
   reviews.forEach((review) => starCounts[review.rating - 1]++);
 
   return (
-    <div className="grid grid-cols-3 gap-4 border-t border-gray-200 mt-12 pt-12">
+    <div id="all-reviews" className="grid grid-cols-3 gap-4 border-t border-gray-200 mt-12 pt-12">
       <div className="col-span-1">
         <h2 className="text-lg font-bold">Customer Reviews</h2>
         <div className="flex items-center">
@@ -52,9 +52,12 @@ export default function Reviews({ reviews }: ReviewsProps) {
         {reviews.map((review) => (
           <div key={review._id} className="border-b border-gray-200 pt-6 pb-6">
             <div className="flex items-center mb-2">
-              <Image src={review.user?.profile?.avatar} alt="" className="w-8 h-8 rounded-full" width={48} height={48} />
+              <Image src={review.user?.profile?.avatar} alt="" className="rounded-full" width={64} height={64} />
               <div className="ml-2">
-                <span className="font-bold">{review.user?.profile?.name}</span>
+                <div className="font-bold">{review.user?.profile?.name}</div>
+                <div className="text-sm text-gray-500">
+                  {new Date(review.createdAt ?? "").toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </div>
                 <div className="flex">
                   {[0, 1, 2, 3, 4].map((rating) => (
                     <StarIcon
@@ -69,9 +72,6 @@ export default function Reviews({ reviews }: ReviewsProps) {
               </div>
             </div>
             <p>{review.comment}</p>
-            <span className="text-sm text-gray-500">
-              {new Date(review.createdAt ?? "").toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-            </span>
           </div>
         ))}
       </div>
