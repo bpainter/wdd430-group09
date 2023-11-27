@@ -149,7 +149,7 @@ export default function ProductDetail({ product, reviews, users, averageRating, 
         </div>
                 
         {/* Product Reviews */}
-        <Reviews reviews={reviewsWithUser} />
+        <Reviews reviews={reviewsWithUser} averageRating={averageRating} />
       </div>
     </>
   );

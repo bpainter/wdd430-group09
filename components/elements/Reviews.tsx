@@ -4,13 +4,14 @@ import { StarIcon } from '@heroicons/react/20/solid';
 
 interface ReviewsProps {
   reviews: Review[];
+  averageRating: number;
 }
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Reviews({ reviews }: ReviewsProps) {
+export default function Reviews({ reviews, averageRating }: ReviewsProps) {
   const starCounts = [0, 0, 0, 0, 0];
   reviews.forEach((review) => starCounts[review.rating - 1]++);
 
@@ -23,8 +24,8 @@ export default function Reviews({ reviews }: ReviewsProps) {
             <StarIcon
               key={rating}
               className={classNames(
-                reviews.length > rating ? 'text-yellow-500' : 'text-gray-200',
-                'h-5 w-5'
+                averageRating > rating ? 'text-yellow-500' : 'text-gray-200',
+                'h-5 w-5 flex-shrink-0'
               )}
             />
           ))}
