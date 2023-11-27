@@ -1,6 +1,6 @@
 // pages/api/products/products.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import mongoClientPromise from '../../../lib/mongodb';
+import connectToDatabase from '../../../lib/mongodb';
 
 /**
  * Handles the request for retrieving products.
@@ -11,8 +11,7 @@ import mongoClientPromise from '../../../lib/mongodb';
  */
 export default async function productsHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    const client = await mongoClientPromise;
-    const db = client.db();
+    const db = await connectToDatabase(); // connectToDatabase() already returns a Db instance
 
     const products = await db.collection('products').find({}).toArray();
     res.status(200).json(products);

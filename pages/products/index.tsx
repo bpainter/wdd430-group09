@@ -1,16 +1,14 @@
-// pages/profiles/index.tsx
+// pages/products/index.tsx
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../../components/layout/Header';
 import { GetServerSideProps } from 'next';
-import mongoClientPromise from '../../lib/mongodb';
+import connectToDatabase from '../../lib/mongodb';
 import { Product } from '../../types/product';
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const client = await mongoClientPromise;
-  const db = client.db();
-
+  const db = await connectToDatabase(); 
   const products = await db.collection('products').find({}).toArray();
 
   return {
@@ -50,7 +48,12 @@ export default function Products({ products }: ProfilesProps) {
             <div key={product._id} className="group relative">
               {/* Product Card Content Here */}
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                {/* Image */}
+                <Image
+                  src={product.images[0]}
+                  alt={product.title}
+                  layout="fill"
+                  objectFit="cover"
+                  className="w-full h-full object-center object-cover lg:w-full lg:h-full overflow-hidden rounded-md" />
               </div>
               <div className="mt-4 flex justify-between">
                 <div>

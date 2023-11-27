@@ -1,26 +1,25 @@
 // lib/mongodb.ts
-import { MongoClient } from "mongodb";
+import { MongoClient, Db } from "mongodb";
 
 const uri = process.env.MONGODB_URI as string;
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+let cachedDb: Db | null = null;
 
 if (!uri) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
 async function connectToDatabase() {
-  if (!client) {
-    console.log("Creating new MongoClient instance");
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
+  if (cachedDb) {
+    console.log("Using cached database instance");
+    return cachedDb;
   }
 
-  console.log("Connecting to MongoDB");
-  await client.connect();
-  console.log("Connected to MongoDB");
+  const client = await MongoClient.connect(uri);
+  const db = client.db();
 
-  return client.db();
+  console.log("New database instance created!");
+  cachedDb = db;
+  return db;
 }
 
 export default connectToDatabase;
