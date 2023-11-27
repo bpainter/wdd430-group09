@@ -89,10 +89,9 @@ interface ProductDetailProps {
 export default function ProductDetail({ product, reviews, users, averageRating, reviewCount }: ProductDetailProps) {
 
   const reviewsWithUser = reviews.map(review => {
-    review.user = users.find(user => user._id === review.user);
-    return review;
+    return { ...review, user: users.find(user => user._id === review.user) };
   });
-  
+
   return (
     <>
       <Head>
@@ -150,7 +149,7 @@ export default function ProductDetail({ product, reviews, users, averageRating, 
         </div>
                 
         {/* Product Reviews */}
-        <Reviews reviews={reviews} />
+        <Reviews reviews={reviewsWithUser} />
       </div>
     </>
   );

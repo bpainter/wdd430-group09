@@ -11,9 +11,15 @@ const nextConfig = {
       },
       { 
         protocol: 'https', 
-        hostname: 'loremflickr.com',
+        hostname: '*.githubusercontent.com',
         port: '',
         pathname: '**',
+      },
+      { 
+        protocol: 'https', 
+        hostname: 'tailwindui.com',
+        port: '',
+        pathname: '/img/logos/**',
       },
     ],
   },
