@@ -3,23 +3,35 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../../components/layout/Header';
+import Pagination from '../../components/elements/Pagination';
 import { GetServerSideProps } from 'next';
 import connectToDatabase from '../../lib/mongodb';
 import { Product } from '../../types/product';
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const page = context.query.page ? parseInt(context.query.page as string) : 1;
+  const perPage = 20;
   const db = await connectToDatabase(); 
-  const products = await db.collection('products').find({}).toArray();
+  const totalProducts = await db.collection('products').countDocuments();
+  const totalPages = Math.ceil(totalProducts / perPage);
+  const products = await db.collection('products').find({})
+    .skip((page - 1) * perPage)
+    .limit(perPage)
+    .toArray();
 
   return {
     props: {
       products: JSON.parse(JSON.stringify(products)),
+      page,
+      totalPages,
     },
   };
 };
 
 interface ProfilesProps {
   products: Product[];
+  page: number;
+  totalPages: number;
 }
 
 /**
@@ -30,7 +42,7 @@ interface ProfilesProps {
  * @returns {JSX.Element} The JSX element representing the products page.
  */
 
-export default function Products({ products }: ProfilesProps) {
+export default function Products({ products, page, totalPages }: ProfilesProps) {
   return (
     <>
       <Head>
@@ -73,8 +85,9 @@ export default function Products({ products }: ProfilesProps) {
               </p>
             </div>
           ))}
-        </div>
+        </div>        
       </div>
+      <Pagination currentPage={page} totalPages={totalPages} />
     </>
   );
 }
