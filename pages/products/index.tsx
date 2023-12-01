@@ -43,13 +43,31 @@ interface ProfilesProps {
  */
 
 export default function Products({ products, page, totalPages }: ProfilesProps) {
+  const categoryFilters = Array.from(new Set(products.flatMap(product => product.categories)))
+    .map(category => ({
+      name: `${category} (${products.filter(product => product.categories.includes(category)).length})`,
+      href: `/products?category=${category}`,
+      current: false
+    }));
+
+  // Price filters
+  const priceFilters = [
+    { name: 'High to low', href: '/products?sort=price_desc', current: false },
+    { name: 'Low to high', href: '/products?sort=price_asc', current: false },
+  ];
+
+  const sortMenus = [
+    { label: 'Sort by Category', options: categoryFilters },
+    { label: 'Sort by Price', options: priceFilters },
+  ];
+
   return (
     <>
       <Head>
         <title>All Products - Handcrafted Haven</title>
         <meta name="description" content="Discover a wide range of handcrafted items." />
       </Head>
-      <Header title="Explore our Handcrafted Products" />
+      <Header title="Explore our Handcrafted Products" sortMenus={sortMenus} />
       
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">All products</h2>
