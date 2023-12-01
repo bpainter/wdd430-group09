@@ -2,6 +2,7 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { useRouter } from 'next/router';
 import { SortMenu } from '@/types/sortMenu';
 
 function classNames(...classes: any[]) {
@@ -20,6 +21,14 @@ interface SortMenuProps {
 }
 
 export default function SortMenu({ label, sortOptions }: SortMenuProps) {
+  const router = useRouter();
+
+  // Update the current property based on the current query parameters
+  sortOptions = sortOptions.map(option => ({
+    ...option,
+    current: router.query.sort === option.href.split('=')[1] || router.query.category === option.href.split('=')[1]
+  }));
+  
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
