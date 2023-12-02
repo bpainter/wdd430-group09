@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import connectToDatabase from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
-import { isValidObjectId } from 'mongoose';
+// import { isValidObjectId } from 'mongoose';
 import Image from 'next/image';
 import { StarIcon } from '@heroicons/react/20/solid';
 import Reviews from '../../components/elements/Reviews';
@@ -127,7 +127,7 @@ export default function ProductDetail({ product, reviews, users, averageRating, 
             </div>
 
             {/* Call to Action */}
-            <button className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Add to cart</button>
+            <button className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent px-8 py-3 text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Add to cart</button>
 
             {/* Product info */}
             <p className="mt-4">{product.description}</p>
@@ -149,7 +149,7 @@ export default function ProductDetail({ product, reviews, users, averageRating, 
         </div>
                 
         {/* Product Reviews */}
-        <Reviews reviews={reviewsWithUser} averageRating={averageRating} />
+        <Reviews reviews={reviewsWithUser} averageRating={averageRating} productId={product._id} />
       </div>
     </>
   );
