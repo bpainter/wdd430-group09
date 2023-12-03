@@ -1,7 +1,23 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 import email from 'next-auth/providers/email';
 
-const userSchema = new mongoose.Schema({
+interface IUser {
+  username: string;
+  email: string;
+  password: string;
+  roles: string[];
+  profile: {
+    name: string;
+    bio: string;
+    location: string;
+    avatar: string;
+  };
+}
+
+interface IUserDocument extends IUser, Document {}
+
+const userSchema = new mongoose.Schema<IUserDocument>({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true, validate: emailValidator },
   password: { type: String, required: true },
@@ -19,4 +35,13 @@ function emailValidator(value: string) {
   return re.test(value);
 }
 
-export default mongoose.model('User', userSchema);
+let User: mongoose.Model<IUserDocument, {}>;
+
+if (mongoose.models.User) {
+  User = mongoose.model('User') as mongoose.Model<IUserDocument, {}>;
+} else {
+  User = mongoose.model('User', userSchema) as mongoose.Model<IUserDocument, {}>;
+}
+
+export type { IUserDocument };
+export { User };

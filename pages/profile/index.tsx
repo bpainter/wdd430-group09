@@ -51,19 +51,19 @@ export default function Profile({ user, products }: ProfileProps) {
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">{user?.username}&rsquo;s Profile</h1>
           <div>
             <button className="inline-block px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">Delete</button>
-            <Link href={`/profile/edit/${user._id}`} className="inline-block px-4 py-2 ml-2 text-white bg-blue-500 rounded hover:bg-blue-600">
+            <Link href={`/profile/edit`} className="inline-block px-4 py-2 ml-2 text-white bg-blue-500 rounded hover:bg-blue-600">
               Edit
             </Link> 
           </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8 bg-gray-100">
+      <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="flex items-center">
-          {user.profile ? (
+          {user.profile.name !== '' ? (
             <>
               <div className="w-24 h-24 overflow-hidden rounded">
-                <Image src={user.profile.avatar} alt={user.profile.name} />
+                <Image src={user.profile.avatar} alt={user.profile.name} width={120} height={120} />
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-bold">{user.profile.name}</h2>

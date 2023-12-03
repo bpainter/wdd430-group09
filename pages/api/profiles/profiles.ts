@@ -3,7 +3,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectToDatabase from '../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
-import User from '../../../models/user';
+import { User, IUserDocument } from '../../../models/user';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const client = await connectToDatabase();
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // Create profile
-        const newUser = new User(req.body);
+        const newUser: IUserDocument = new User(req.body);
         await newUser.save();
         res.status(201).json(newUser);
         break;
@@ -37,28 +37,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(200).json(user);
         break;
       case 'PUT':
-        // Validate ID and request body
-        if (!req.query.id || !req.body || Object.keys(req.body).length === 0) {
-          return res.status(400).json({ error: 'Missing user ID or profile data' });
-        }
-
-        // Update profile
-        const updatedUser = await User.findByIdAndUpdate(req.query.id as string, req.body, { new: true });
-        if (!updatedUser) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-
-        res.status(200).json(updatedUser);
-        break;
+          // Validate ID and request body
+          // if (!req.body.id || Object.keys(req.body).length === 0) {
+          //   return res.status(400).json({ error: 'Missing user ID or profile data' });
+          // }
+        
+          // Extract id from request body and create data object with the rest of the properties
+          const { _id, ...data } = req.body;
+          console.log("PUT");
+          console.log(req.body);
+          console.log(_id, data);
+        
+          // Update profile
+          const result = await usersCollection.updateOne(
+            { _id: new ObjectId(_id) },
+            { $set: data }
+          );
+          console.log("PUT RESULT")
+          console.log(result);
+        
+          if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+        
+          res.status(200).json(result);
+          break;
       case 'DELETE':
         // Validate ID
-        if (!req.query.id) {
-          return res.status(400).json({ error: 'Missing user ID' });
-        }
+        // if (!req.query.id) {
+        //   return res.status(400).json({ error: 'Missing user ID' });
+        // }
 
         // Delete profile
-        const deletedUser = await User.findByIdAndDelete(req.query.id as string);
-        if (!deletedUser) {
+        const deletedUser = await usersCollection.deleteOne({
+          _id: new ObjectId(_id),
+        });
+
+        if (deletedUser.deletedCount === 0) {
           return res.status(404).json({ error: 'User not found' });
         }
 
