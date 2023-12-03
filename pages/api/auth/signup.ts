@@ -29,6 +29,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     email,
     password: hashedPassword,
     roles: [isArtisan ? 'artisan' : 'user'],
+    profile: {
+      name: '',
+      bio: '',
+      location: '',
+      avatar: '',
+    },
   });
 
   client.close();
