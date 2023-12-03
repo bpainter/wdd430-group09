@@ -7,7 +7,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { username, email, password } = req.body;
+  const { username, email, password, isArtisan } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: 'Missing fields' });
@@ -28,7 +28,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     username,
     email,
     password: hashedPassword,
-    roles: ['user'], // default role
+    roles: [isArtisan ? 'artisan' : 'user'],
+    profile: {
+      name: '',
+      bio: '',
+      location: '',
+      avatar: '',
+    },
   });
 
   client.close();
