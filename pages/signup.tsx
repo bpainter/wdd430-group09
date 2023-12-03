@@ -2,9 +2,15 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import Alert from '../components/elements/Alert';
-import Header from '../components/layout/Header';
+
+interface FormData {
+  username: string;
+  email: string;
+  password: string;
+  isArtisan: boolean;
+}
 
 /**
  * Signup component for creating a new user account.
@@ -13,23 +19,13 @@ import Header from '../components/layout/Header';
  */
 
 export default function Signup() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const router = useRouter();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSignupSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const target = event.target as typeof event.target & {
-      username: { value: string };
-      email: { value: string };
-      password: { value: string };
-      isArtisan: { checked: boolean };
-    };
-    const username = target.username.value;
-    const email = target.email.value;
-    const password = target.password.value;
-    const isArtisan = target.isArtisan.checked;
+  const handleSignupSubmit = async (data: FormData) => {
+    const { username, email, password, isArtisan } = data;
 
     if (!username || !email || !password) {
       setError('Please fill in all fields');
@@ -38,7 +34,7 @@ export default function Signup() {
 
     setProcessing(true);
 
-    const response = await fetch('/api/auth/callback/credentials', {
+    const response = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,27 +42,35 @@ export default function Signup() {
       body: JSON.stringify({ username, email, password, isArtisan }),
     });
 
-    const data = await response.json();
+    const responseData = await response.json();
 
     setProcessing(false);
 
     if (!response.ok) {
-      setError(data.message || 'An error occurred. Please try again.');
+      setError(responseData.message || 'An error occurred. Please try again.');
       return;
     }
-    
-    if (response.ok) {
-      // Handle success - Create a session and redirect the user
-      signIn('credentials', { callbackUrl: isArtisan ? `/artisans/${data.id}` : '/' });
-      // Handle success - Redirect or show success message
-      // if (isArtisan) {
-      //     router.push(`/artisans/${data.id}`); // Redirect to artisan profile page
-      //   } else {
-      //   router.push('/'); // Redirect to homepage
-      // }
+
+    // Sign the user in with their credentials
+    await signIn('credentials', {
+      username: data.username,
+      password: data.password,
+      redirect: false,
+    });
+
+    // Get the session
+    const session = await getSession();
+    if (session) {
+      // Check if the user is an artisan
+      if (session.user.isArtisan) {
+        // Redirect to the artisan page
+        router.push(`/artisan/${session.user.id}`);
+      } else {
+        // Redirect to the homepage
+        router.push('/');
+      }
     } else {
-      // Handle errors - Show error message
-      setError(data.message || 'Something went wrong');
+      setError('Signup failed');
     }
   };
 
@@ -88,7 +92,7 @@ export default function Signup() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
         {error && <Alert message={error} type="danger" />}
 
-        <form onSubmit={handleSignupSubmit} className="space-y-6 mt-4">
+        <form onSubmit={handleSubmit(handleSignupSubmit)} className="space-y-6 mt-4">
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-900">
               Username
@@ -141,6 +145,7 @@ export default function Signup() {
 
           <div className="flex items-center">
             <input
+              {...register('isArtisan')}
               id="isArtisan"
               name="isArtisan"
               type="checkbox"
