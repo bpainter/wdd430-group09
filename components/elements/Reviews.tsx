@@ -139,7 +139,7 @@ export default function Reviews({ reviews: reviewsProp, averageRating, productId
                 <div className="flex flex-row-reverse justify-between mt-4">
                   <button type="submit" className="mt-3 rounded-md border  shadow-sm px-4 py-2  text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Add Your Rating</button>
                   <button type="button" className="mt-3 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm" onClick={() => setIsModalOpen(false)}>
-                    Close
+                    Cancel
                   </button>
                 </div>
               </form>

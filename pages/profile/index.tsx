@@ -45,17 +45,31 @@ type ProfileProps = {
 export default function Profile({ user, products }: ProfileProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditClick = (product: Product) => {
+    setCurrentProduct(product);
+    setIsEditing(true);
+  };
+  
+  const handleAddClick = () => {
+    setCurrentProduct(null);
+    setIsEditing(false);
+  };
 
   const handleProductSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
-    if (!currentProduct) {
-      return;
-    }
+    
+    const url = isEditing ? `/api/products/${currentProduct?._id}` : '/api/products';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    // if (!currentProduct) {
+    //   return;
+    // }
   
     try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -105,7 +119,7 @@ export default function Profile({ user, products }: ProfileProps) {
                 <p>{user.profile.bio}</p>
                 {user.roles.includes('artisan') && (
                   <Link href={`/artisans/${user._id}`} className="inline-block px-2 py-1 mt-2 text-sm text-gray-700 bg-gray-200 rounded">
-                    `${window.location.href}/artisans/${user._id}`
+                    {`https://handcraftedhaven.com/artisans/${user._id}`}
                   </Link>
                 )}
               </div>
@@ -165,77 +179,85 @@ export default function Profile({ user, products }: ProfileProps) {
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <form onSubmit={handleProductSubmit}>
-              <div className="mt-2">
-                <label htmlFor="title" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
-                  Title
-                </label>
-                <input
-                  id="title"
-                  name="title"
-                  value={currentProduct?.title || ''}
-                  onChange={(e) => setCurrentProduct({ ...currentProduct, title: e.target.value })}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-                />
-              </div>
+            <h2 className="text-2xl font-bold mb-4">{isEditing ? 'Edit Product' : 'Add Product'}</h2>
 
-              <div className="mt-2">
-                <label htmlFor="description" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={4}
-                  value={currentProduct?.description || ''}
-                  onChange={(e) => setCurrentProduct({ ...currentProduct, description: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-                />
-              </div>
+            <div className="mt-2">
+              <label htmlFor="title" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                Title
+              </label>
+              <input
+                id="title"
+                name="title"
+                value={currentProduct?.title || ''}
+                onChange={(e) => setCurrentProduct(currentProduct ? { ...currentProduct, title: e.target.value } : { _id: 'temp', title: e.target.value, artisan: '', description: '', price: 0, images: [], categories: [], averageRating: 0, createdAt: new Date() })}
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+              />
+            </div>
 
-              <div className="mt-2">
-                <label htmlFor="price" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
-                  Price
-                </label>
-                <input
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={currentProduct?.price || ''}
-                  onChange={(e) => setCurrentProduct({ ...currentProduct, price: parseFloat(e.target.value) })}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-                />
-              </div>
+            <div className="mt-2">
+              <label htmlFor="description" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                value={currentProduct?.description || ''}
+                onChange={(e) => setCurrentProduct(currentProduct ? { ...currentProduct, description: e.target.value } : { _id: 'temp', title: '', artisan: '', description: e.target.value, price: 0, images: [], categories: [], averageRating: 0, createdAt: new Date() })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+              />
+            </div>
 
-              <div className="mt-2">
-                <label htmlFor="images" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
-                  Images
-                </label>
-                <input
-                  id="images"
-                  name="images"
-                  type="text"
-                  value={currentProduct?.images.join(', ') || ''}
-                  onChange={(e) => setCurrentProduct({ ...currentProduct, images: e.target.value.split(', ') })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-                />
-              </div>
+            <div className="mt-2">
+              <label htmlFor="price" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                Price
+              </label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                value={currentProduct?.price || ''}
+                onChange={(e) => setCurrentProduct(currentProduct ? { ...currentProduct, price: parseFloat(e.target.value) } : { _id: 'temp', title: '', artisan: '', description: '', price: parseFloat(e.target.value), images: [], categories: [], averageRating: 0, createdAt: new Date() })}
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+              />
+            </div>
 
-              <div className="mt-2">
-                <label htmlFor="images" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
-                  Category
-                </label>
-                <input
-                  id="category"
-                  name="category"
-                  type="text"
-                  value={currentProduct?.categories || ''}
-                  onChange={(e) => setCurrentProduct({ ...currentProduct, categories: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
-                />
-              </div>
-            <button type="submit">Save</button>
+            <div className="mt-2">
+              <label htmlFor="images" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                Image
+              </label>
+              <input
+                id="images"
+                name="images"
+                type="text"
+                value={currentProduct?.images.join(', ') || ''}
+                onChange={(e) => setCurrentProduct(currentProduct ? { ...currentProduct, images: e.target.value.split(', ') } : { _id: 'temp', title: '', artisan: '', description: '', price: 0, images: e.target.value.split(', '), categories: [], averageRating: 0, createdAt: new Date() })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+              />
+            </div>
+
+            <div className="mt-2">
+              <label htmlFor="images" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                Category
+              </label>
+              <input
+                id="category"
+                name="category"
+                type="text"
+                value={currentProduct?.categories || ''}
+                onChange={(e) => setCurrentProduct(currentProduct ? { ...currentProduct, categories: e.target.value.split(', ') } : { _id: 'temp', title: '', artisan: '', description: '', price: 0, images: [], categories: e.target.value.split(', '), averageRating: 0, createdAt: new Date() })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+              />
+            </div>
+            
+            <div className="flex flex-row-reverse justify-between mt-4">
+              <button type="submit" className="mt-3 rounded-md border  shadow-sm px-4 py-2  text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Save</button>
+              <button type="button" className="mt-3 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
           </form>
         </Modal>
       )}
