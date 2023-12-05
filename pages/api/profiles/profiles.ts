@@ -5,7 +5,7 @@ import connectToDatabase from '../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { User, IUserDocument } from '../../../models/user';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function profilesHandler(req: NextApiRequest, res: NextApiResponse) {
   const client = await connectToDatabase();
   const usersCollection = client.collection('users');
 

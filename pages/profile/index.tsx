@@ -1,10 +1,14 @@
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useState } from 'react';
 import { getSession } from 'next-auth/react';
 import connectToDatabase from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
+import Modal from '@/components/elements/Modal';
+import { Product } from '../../types/product';
+
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const session = await getSession(context);
@@ -39,6 +43,36 @@ type ProfileProps = {
 };
 
 export default function Profile({ user, products }: ProfileProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+
+  const handleProductSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+  
+    if (!currentProduct) {
+      return;
+    }
+  
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentProduct),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const product: Product = await response.json();
+      setCurrentProduct(product);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -71,7 +105,7 @@ export default function Profile({ user, products }: ProfileProps) {
                 <p>{user.profile.bio}</p>
                 {user.roles.includes('artisan') && (
                   <Link href={`/artisans/${user._id}`} className="inline-block px-2 py-1 mt-2 text-sm text-gray-700 bg-gray-200 rounded">
-                    View Artisan Profile
+                    `${window.location.href}/artisans/${user._id}`
                   </Link>
                 )}
               </div>
@@ -98,9 +132,15 @@ export default function Profile({ user, products }: ProfileProps) {
                 <h3 className="mt-2 text-lg font-bold">{product.title}</h3>
                 <p className="text-gray-500">${product.price}</p>
                 <div className="mt-2">
-                  <Link href={`/products/edit/${product._id}`} className="inline-block px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
+                  <button 
+                    onClick={() => {
+                      setCurrentProduct(product);
+                      setIsModalOpen(true);
+                    }}
+                    className="inline-block px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+                  >
                     Edit
-                  </Link>
+                  </button>
                   <button className="inline-block px-2 py-1 ml-2 text-sm text-white bg-red-500 rounded hover:bg-red-600">Delete</button>
                 </div>
               </div>
@@ -108,12 +148,97 @@ export default function Profile({ user, products }: ProfileProps) {
           </div>
         ) : (
           <div className="border-dotted border-2 border-gray-300 rounded w-full min-h-[200px] flex items-center justify-center">
-            <Link href="/products/create" className="px-4 py-2 bg-gray-300 rounded">
+            <button 
+              className="px-4 py-2 bg-gray-300 rounded"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentProduct(null);
+                setIsModalOpen(true);
+              }}
+            >
               Add your first product
-            </Link>
+            </button>
+  
           </div>
         )}
       </section>
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <form onSubmit={handleProductSubmit}>
+              <div className="mt-2">
+                <label htmlFor="title" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                  Title
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  value={currentProduct?.title || ''}
+                  onChange={(e) => setCurrentProduct({ ...currentProduct, title: e.target.value })}
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
+
+              <div className="mt-2">
+                <label htmlFor="description" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={4}
+                  value={currentProduct?.description || ''}
+                  onChange={(e) => setCurrentProduct({ ...currentProduct, description: e.target.value })}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
+
+              <div className="mt-2">
+                <label htmlFor="price" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                  Price
+                </label>
+                <input
+                  id="price"
+                  name="price"
+                  type="number"
+                  value={currentProduct?.price || ''}
+                  onChange={(e) => setCurrentProduct({ ...currentProduct, price: parseFloat(e.target.value) })}
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
+
+              <div className="mt-2">
+                <label htmlFor="images" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                  Images
+                </label>
+                <input
+                  id="images"
+                  name="images"
+                  type="text"
+                  value={currentProduct?.images.join(', ') || ''}
+                  onChange={(e) => setCurrentProduct({ ...currentProduct, images: e.target.value.split(', ') })}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
+
+              <div className="mt-2">
+                <label htmlFor="images" className="block text-lg font-bold leading-6 text-gray-900 mb-2">
+                  Category
+                </label>
+                <input
+                  id="category"
+                  name="category"
+                  type="text"
+                  value={currentProduct?.categories || ''}
+                  onChange={(e) => setCurrentProduct({ ...currentProduct, categories: e.target.value })}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                />
+              </div>
+            <button type="submit">Save</button>
+          </form>
+        </Modal>
+      )}
     </>
   );
 }

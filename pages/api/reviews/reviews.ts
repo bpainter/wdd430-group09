@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectToDatabase from '../../../lib/mongodb';
 
-export default async function handler(
+export default async function reviewsHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
