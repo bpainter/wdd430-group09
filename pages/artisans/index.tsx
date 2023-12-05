@@ -91,7 +91,7 @@ export default function Artisans({ artisans, products, reviews }: ArtisansProps)
                   </div>
                   
                   <span className="ml-2 text-sm">Based on {productReviews.length} Reviews</span>
-                  <Link href={`/artisan/${artisan._id}`} className="mt-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded text-sm font-medium shadow-sm text-gray-700 bg-white hover:bg-gray-50">
+                  <Link href={`/artisans/${artisan._id}`} className="mt-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded text-sm font-medium shadow-sm text-gray-700 bg-white hover:bg-gray-50">
                     View Artisan
                   </Link>
                 </div>
