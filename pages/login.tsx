@@ -61,9 +61,9 @@ export default function Login() {
       if (session.user.roles.includes('admin')) {
         console.log('Redirect to admin', session.user.roles);
         router.push('/admin');
-      } else if (session.user.roles.includes('artisan')) {
-        console.log('Redirect to artisan', session.user.roles);
-        router.push(`/artisan/${session.user.id}`);
+      // } else if (session.user.roles.includes('artisan')) {
+      //   console.log('Redirect to artisan', session.user.roles);
+      //   router.push(`/profile/${session.user.id}`);
       } else {
         console.log('Redirect to user', session.user.roles);
         router.push('/profile');
@@ -75,24 +75,6 @@ export default function Login() {
       setLoading(false);
       console.log('Login failed'); // Log the failed login
     }
-
-    // OLD CODE - NOT WORKING
-    // Use the signIn function from NextAuth to create a session
-    // const result = await signIn('credentials', {
-    //   email,
-    //   password,
-    // });
-
-    // console.log('Login result:', result); // Log the result of the login attempt
-
-    // if (result && !result.ok) {
-    //   // Handle errors - Show error message
-    //   setError(result.error || 'Login failed');
-    //   setLoading(false);
-    // } else {
-    //   console.log('Login successful'); // Log the successful login
-    //   router.push('/profile'); // Redirect to the profile page after successful login
-    // }
   };
 
   return (
