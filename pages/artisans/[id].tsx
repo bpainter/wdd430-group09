@@ -91,22 +91,22 @@ export default function ArtisanDetail({ artisan, products }: ArtisanDetailProps)
                   className="w-full h-full object-center object-cover lg:w-full lg:h-full overflow-hidden rounded-md" />
                 </div>
                 <div className="flex justify-between mt-2">
-                <div>
-                  <h3 className="text-sm text-gray-700">
-                    <Link href={`/products/${product._id}`}>
-                      <span aria-hidden="true" className="absolute inset-0"></span>
-                      {product.title}
-                    </Link>
-                  </h3>
+                  <div>
+                    <h3 className="text-sm text-gray-700">
+                      <Link href={`/products/${product._id}`}>
+                        <span aria-hidden="true" className="absolute inset-0"></span>
+                        {product.title}
+                      </Link>
+                    </h3>
+                  </div>
+                  <p className="text-sm font-medium text-gray-900">${product.price}</p>
                 </div>
-                <p className="text-sm font-medium text-gray-900">${product.price}</p>
+                <p className="text-sm text-gray-500">
+                  {product.categories.map((category, index) => (
+                    <span key={index}>{category}</span>
+                  ))}
+                </p>
               </div>
-              <p className="text-sm text-gray-500">
-                {product.categories.map((category, index) => (
-                  <span key={index}>{category}</span>
-                ))}
-              </p>
-            </div>
             ))}
           </div>
         ) : (

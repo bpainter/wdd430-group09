@@ -1,5 +1,6 @@
 // pages/api/products/products.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { Double, MongoClient, ObjectId } from 'mongodb';
 import connectToDatabase from '../../../lib/mongodb';
 
 export default async function productsHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,9 +13,19 @@ export default async function productsHandler(req: NextApiRequest, res: NextApiR
       res.status(200).json(products);
       break;
     case 'POST':
-      const newProduct = req.body;
-      const result = await collection.insertOne(newProduct);
-      res.status(201).json(result);
+      const newProduct = {
+        _id: new ObjectId(),
+        artisan: new ObjectId(req.body.artisan),
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price,
+        images: req.body.images,
+        categories: req.body.categories,
+        averageRating: req.body.averageRating,
+        createdAt: new Date(),
+      };
+      await collection.insertOne(newProduct);
+      res.status(200).json(newProduct);
       break;
     case 'PUT':
       const updatedProduct = req.body;

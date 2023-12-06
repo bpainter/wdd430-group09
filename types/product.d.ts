@@ -1,7 +1,7 @@
 // types/product.d.ts
 export interface Product {
-  _id: string;
-  artisan: string;
+  _id: ObjectId;
+  artisan: ObjectId;
   title: string;
   description: string;
   price: number;
