@@ -77,31 +77,39 @@ export default function Profile({ user, initialProducts, userId }: ProfileProps)
     setIsModalOpen(true);
   };
   
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleProductSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-  
-    const url = '/api/products/products';
-    const method = isEditing ? 'PUT' : 'POST';
-  
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(currentProduct),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-  
-      const product: Product = await response.json();
-      setCurrentProduct(product);
-    } catch (error) {
-      console.error('Error:', error);
+  event.preventDefault();
+
+  setIsProcessing(true);
+
+  const url = '/api/products/products';
+  const method = isEditing ? 'PUT' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(currentProduct),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-  };
+
+    const product: Product = await response.json();
+    setCurrentProduct(product);
+
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    setIsProcessing(false);
+  }
+};
 
   const handleDeleteClick = async (productId: string) => {
     try {
@@ -152,8 +160,8 @@ export default function Profile({ user, initialProducts, userId }: ProfileProps)
         <div className="flex items-center">
           {user.profile.name !== '' ? (
             <>
-              <div className="w-24 h-24 overflow-hidden rounded">
-                <Image src={user.profile.avatar} alt={user.profile.name} width={120} height={120} />
+              <div className="w-200 h-200 overflow-hidden rounded">
+                <Image src={user.profile.avatar} alt={user.profile.name} width={200} height={200} />
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-bold">{user.profile.name}</h2>
@@ -177,7 +185,15 @@ export default function Profile({ user, initialProducts, userId }: ProfileProps)
       </section>
 
       <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold mb-4">Products</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Products</h2>
+          <button 
+            className="px-4 py-2 bg-gray-300 rounded"
+            onClick={handleAddClick}
+          >
+            Add a product
+          </button>
+        </div>
         {products.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 mt-4">
             {products.map((product) => (
@@ -285,7 +301,7 @@ export default function Profile({ user, initialProducts, userId }: ProfileProps)
               <input
                 id="images"
                 name="images"
-                type="text"
+                type="url"
                 value={currentProduct?.images?.join(', ') || ''}
                 onChange={(e) => setCurrentProduct(currentProduct ? { ...currentProduct, images: e.target.value.split(', ') } : { _id: uuidv4(), title: '', artisan: session.data?.user?._id, description: '', price: 0, images: e.target.value.split(', '), categories: [], averageRating: 0, createdAt: new Date() })}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
@@ -309,9 +325,10 @@ export default function Profile({ user, initialProducts, userId }: ProfileProps)
             <div className="flex flex-row-reverse justify-between mt-4">
               <button 
                 type="submit" 
+                disabled={isProcessing}
                 className="mt-3 rounded-md border  shadow-sm px-4 py-2  text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               >
-                Save
+                {isProcessing ? 'Saving...' : 'Save'}
               </button>
               <button type="button" className="mt-3 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm" onClick={() => setIsModalOpen(false)}>
                 Cancel

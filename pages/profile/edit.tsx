@@ -86,7 +86,7 @@ export default function EditProfile({ user: initialUser }: EditProfileProps) {
           name: user.profile.name || '',
           bio: user.profile.bio || '',
           location: user.profile.location || '',
-          avatar: 'https://avatars.githubusercontent.com/u/63383031',
+          avatar: user.profile.avatar || '',
         },
       };
   
@@ -114,41 +114,6 @@ export default function EditProfile({ user: initialUser }: EditProfileProps) {
       .catch(error => console.error(error));
   };
 
-  // Throws a 500 error
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   console.log('Form submitted');
-  
-  //   // Create form data to send in the request
-  //   const formData = new FormData();
-  //   if (user) {
-  //     formData.append('_id', user._id);
-  //     formData.append('username', user.username || '');
-  //     formData.append('email', user.email || '');
-  //     formData.append('password', user.password || '');
-  //     formData.append('profile', JSON.stringify({
-  //       name: user.profile.name || '',
-  //       bio: user.profile.bio || '',
-  //       location: user.profile.location || '',
-  //     }));
-  //     if (avatar) formData.append('avatar', avatar);
-  
-  //     // Send request to update user
-  //     axios.put(`/api/profiles/profiles?id=${user._id}`, formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       }
-  //     })
-  //     .then(response => {
-  //       console.log('Axios Response', response);
-  //       router.push('/profile')
-  //     })
-  //     .catch(error => console.error(error));
-  //   }
-  // };
-
-  // let loadingStatus = 'loading';
-  // if (loadingStatus === 'loading') return 'Loading session...';
   if (!user || !user.profile) return 'Loading user...';
 
   return (
@@ -214,13 +179,14 @@ export default function EditProfile({ user: initialUser }: EditProfileProps) {
             Avatar
           </label>
           <div className="mt-1">
-            <input
-              type="file"
-              name="avatar"
-              id="avatar"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-              onChange={(e) => setAvatar(e.target.files ? e.target.files[0] : null)}
-            />
+          <input
+            type="url"
+            name="avatar"
+            id="avatar"
+            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+            value={user?.profile.avatar || ''}
+            onChange={(e) => setUser({...user, profile: {...user.profile, avatar: e.target.value}})}
+          />
           </div>
         </div>
 
