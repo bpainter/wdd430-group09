@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
   return {
     props: {
       user: JSON.parse(JSON.stringify(user)),
-      products: JSON.parse(JSON.stringify(products)),
+      initialProducts: JSON.parse(JSON.stringify(products)),
       userId: session.user.id
     },
   };
@@ -44,12 +44,15 @@ type ProfileProps = {
   user: any;
   products: any[];
   userId: string;
+  initialProducts: Product[];
 };
 
-export default function Profile({ user, products, userId }: ProfileProps) {
+export default function Profile({ user, initialProducts, userId }: ProfileProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [productList, setProductList] = useState<Product[]>([]);
   const session = useSession();
 
   const handleAddClick = () => {
@@ -76,13 +79,9 @@ export default function Profile({ user, products, userId }: ProfileProps) {
   
   const handleProductSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
-    const url = isEditing ? `/api/products/products/${currentProduct?._id}` : '/api/products/products';
+  
+    const url = '/api/products/products';
     const method = isEditing ? 'PUT' : 'POST';
-
-    // if (!currentProduct) {
-    //   return;
-    // }
   
     try {
       const response = await fetch(url, {
@@ -104,22 +103,26 @@ export default function Profile({ user, products, userId }: ProfileProps) {
     }
   };
 
-  // const handleDeleteClick = async (productId: string) => {
-  //   try {
-  //     const response = await fetch(`/api/products/products/${productId}`, {
-  //       method: 'DELETE',
-  //     });
+  const handleDeleteClick = async (productId: string) => {
+    try {
+      const response = await fetch(`/api/products/products`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ _id: productId }),
+      });
   
-  //     if (!response.ok) {
-  //       throw new Error('Network response was not ok');
-  //     }
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
   
-  //     // Remove the product from the local state
-  //     setProducts(products.filter(product => product._id !== productId));
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
+      // Remove the product from the local state
+      setProducts(products.filter(product => product._id !== productId));
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <>
@@ -206,7 +209,11 @@ export default function Profile({ user, products, userId }: ProfileProps) {
                   >
                     Edit
                   </button>
-                  <button className="inline-block px-2 py-1 ml-2 text-sm text-white bg-red-500 rounded hover:bg-red-600">Delete</button>
+                  <button 
+                    onClick={() => handleDeleteClick(product._id)}
+                    className="inline-block px-2 py-1 ml-2 text-sm text-white bg-red-500 rounded hover:bg-red-600">
+                      Delete
+                  </button>
                 </div>
               </div>
             ))}

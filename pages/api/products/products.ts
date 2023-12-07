@@ -28,14 +28,27 @@ export default async function productsHandler(req: NextApiRequest, res: NextApiR
       res.status(200).json(newProduct);
       break;
     case 'PUT':
-      const updatedProduct = req.body;
-      const updatedResult = await collection.updateOne({ _id: updatedProduct._id }, { $set: updatedProduct });
-      res.status(200).json(updatedResult.modifiedCount);
-      break;
+        const { _id, artisan, ...updatedProduct } = req.body;
+        const result = await collection.updateOne(
+          { _id: new ObjectId(_id) },
+          { $set: { ...updatedProduct, artisan: new ObjectId(artisan) } }
+        );
+      
+        if (result.matchedCount === 0) {
+          return res.status(404).json({ error: 'Product not found' });
+        }
+      
+        res.status(200).json(result);
+        break;
     case 'DELETE':
-      const deletedProduct = req.body;
-      const deletedResult = await collection.deleteOne({ _id: deletedProduct._id });
-      res.status(200).json(deletedResult.deletedCount);
+      const { _id: _idToDelete } = req.body;
+      const deleteResult = await collection.deleteOne({ _id: new ObjectId(_idToDelete) });
+    
+      if (deleteResult.deletedCount === 0) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+    
+      res.status(200).json(deleteResult);
       break;
     default:
       res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
