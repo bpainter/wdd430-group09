@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form'
-import { signIn, getSession } from 'next-auth/react'
 import Alert from '../components/elements/Alert';
 
 interface FormData {
@@ -51,27 +50,8 @@ export default function Signup() {
       return;
     }
 
-    // Sign the user in with their credentials
-    await signIn('credentials', {
-      username: data.username,
-      password: data.password,
-      redirect: false,
-    });
-
-    // Get the session
-    const session = await getSession();
-    if (session) {
-      // Check if the user is an artisan
-      if (session.user.isArtisan) {
-        // Redirect to the artisan page
-        router.push(`/artisan/${session.user.id}`);
-      } else {
-        // Redirect to the homepage
-        router.push('/');
-      }
-    } else {
-      setError('Signup failed');
-    }
+    // Redirect to the login page
+    router.push('/login');
   };
 
   return (
