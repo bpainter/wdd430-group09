@@ -5,7 +5,7 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
-import User from '../models/user';
+import { User } from '../models/user';
 import Product from '../models/product';
 import Review from '../models/review';
 import dotenv from 'dotenv';
